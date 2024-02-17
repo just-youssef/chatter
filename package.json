@@ -1,0 +1,18 @@
+{
+  "name": "chatter",
+  "private": true,
+  "workspaces": [
+    "*"
+  ],
+  "scripts": {
+    "dev:fe": "lerna run dev --scope=client",
+    "dev:be": "lerna run dev --scope=server",
+    "dev": "lerna run dev",
+    "build": "lerna run build",
+    "preview": "lerna run preview",
+    "start": "lerna run start"
+  },
+  "devDependencies": {
+    "lerna": "^8.1.2"
+  }
+}
