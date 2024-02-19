@@ -9,6 +9,7 @@ import { v2 as cloudinary } from 'cloudinary' ;
 import express, { urlencoded, json } from "express";
 import cors from 'cors';
 import helmet from 'helmet';
+import cookieParser from "cookie-parser";
 import path from "path";
 
 // routers
@@ -52,6 +53,7 @@ app.use(cors());
 app.use(helmet());
 app.use(urlencoded({ extended: true, }));
 app.use(json());
+app.use(cookieParser());
 
 // using routers
 app.use("/api/user", userRouter);

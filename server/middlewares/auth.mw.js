@@ -3,7 +3,7 @@ import User from "../models/user.model.js";
 
 const AuthMW = async(req, res, nxt) => {
     // get token
-    let token = req.header('x-auth-token');
+    let token = req.cookies.access_token
     if (!token) return res.status(401).json({ error: "access denied" });
 
     // verify token

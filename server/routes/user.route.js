@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { changePassword, checkVerfication, resendVerfication, login, register, updateUser, verify, deleteUser } from "../controllers/user.controller.js";
+import { changePassword, checkVerfication, resendVerfication, login, register, updateUser, verify, deleteUser, logout } from "../controllers/user.controller.js";
 import RegisterValidatorMW from "../middlewares/register.validator.mw.js";
 import LoginValidatorMW from "../middlewares/login.validator.mw.js";
 import UpdateUserValidatorMW from "../middlewares/updateUser.validator.mw.js";
@@ -18,7 +18,9 @@ router.get('/verfication/resend/:id', resendVerfication)
 
 router.post('/login', LoginValidatorMW, login)
 
-router.post('/update', [AuthMW, UpdateUserValidatorMW], updateUser)
+router.get('/logout', AuthMW, logout)
+
+router.put('/update', [AuthMW, UpdateUserValidatorMW], updateUser)
 
 router.post('/changePassword', [AuthMW, ChangePasswordValidatorMW], changePassword)
 

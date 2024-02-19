@@ -26,6 +26,11 @@ const UserSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    'gender': {
+        type: String,
+        required: [true, "gender field is required"],
+        enum: ["male", "female"]
+    },
     'avatar':{
         type: String,
         default: ''
@@ -34,7 +39,7 @@ const UserSchema = new Schema({
 
 UserSchema.methods.genAuthToken = function () {
     // generate jwt
-    return jwt.sign({ userID: this._id }, process.env.JWT_SECRET);
+    return jwt.sign({ userID: this._id }, process.env.JWT_SECRET, { expiresIn: "14d" });
 }
 
 UserSchema.methods.verifyEmail = async function () {

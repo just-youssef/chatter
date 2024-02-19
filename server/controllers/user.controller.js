@@ -7,7 +7,7 @@ import sendEmail from "../utils/sendEmail.js";
 const register = async (req, res, nxt) => {
     try {
         // extrct data from request body
-        const { first_name, last_name, email, password } = req.body;
+        const { first_name, last_name, gender, email, password } = req.body;
 
         // check if email exits
         let user = await User.findOne({ email });
@@ -20,8 +20,13 @@ const register = async (req, res, nxt) => {
         let saltRounds = await genSalt();
         let hashedPassword = await hash(password, saltRounds);
 
+        // random avatar based on gender
+        const avatar = gender === "male" ?
+            `https://avatar.iran.liara.run/public/boy?username=${first_name+last_name}`
+            : `https://avatar.iran.liara.run/public/girl?username=${first_name+last_name}`
+
         user = new User({
-            first_name, last_name, email,
+            first_name, last_name, email, gender, avatar,
             password: hashedPassword,
         });
 
@@ -144,12 +149,31 @@ const login = async (req, res, nxt) => {
         let valid = await compare(password, user.password);
         if (!valid) return res.status(400).json({ error: { password: "incorrect password" } });
 
-        // generate jwt and extrat user data
+        // generate access token and extrat user data
         let token = user.genAuthToken();
-        const { password: pass, ...rest } = user._doc;
+        const { _id, first_name, last_name, gender, avatar } = user._doc;
 
-        // send response
-        return res.json({ token, details: rest });
+        // set token & send response
+        res.cookie("access_token", token, {
+            maxAge: 14 * 24 * 60 * 60 * 1000, // must be in ms
+            httpOnly: true,
+            sameSite: "strict",
+            secure: process.env.NODE_ENV === "prod"
+        })
+        console.log("user logged in");
+
+        return res.json({ _id, first_name, last_name, email, gender, avatar });
+    } catch (err) {
+        nxt(err)
+    }
+}
+
+// logout
+const logout = async (req, res, nxt) => {
+    try {
+        res.clearCookie("access_token");
+        console.log("user logged out");
+        return res.json({ message: "user logged out" })
     } catch (err) {
         nxt(err)
     }
@@ -178,9 +202,9 @@ const updateUser = async (req, res, nxt) => {
         }, { new: true });
         console.log("user updated");
 
-        // exclude password and send user data
-        const { password: pass, ...rest } = updatedUser._doc;
-        return res.json(rest)
+        // extract and send user data
+        const { _id, first_name, last_name, email, gender, avatar } = updatedUser._doc;
+        return res.json({ _id, first_name, last_name, email, gender, avatar })
     } catch (err) {
         nxt(err)
     }
@@ -237,6 +261,7 @@ export {
     checkVerfication,
     resendVerfication,
     login,
+    logout,
     updateUser,
     changePassword,
     deleteUser
