@@ -39,7 +39,7 @@ const UserSchema = new Schema({
 
 UserSchema.methods.genAuthToken = function () {
     // generate jwt
-    return jwt.sign({ userID: this._id }, process.env.JWT_SECRET, { expiresIn: "14d" });
+    return jwt.sign({ userId: this._id }, process.env.JWT_SECRET, { expiresIn: "14d" });
 }
 
 UserSchema.methods.verifyEmail = async function () {

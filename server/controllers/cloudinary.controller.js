@@ -2,7 +2,7 @@ import { v2 as cloudinary } from 'cloudinary' ;
 
 const uploadFile = async(req, res, nxt) => {
     try {
-        const { url } = await cloudinary.uploader.upload(req.file.path, { folder: `chatter/${req.userID}` });
+        const { url } = await cloudinary.uploader.upload(req.file.path, { folder: `chatter/${req.userId}` });
         console.log(`1 image uploaded`);
 
         return res.json({ url });
@@ -16,7 +16,7 @@ const uploadMultiple = async(req, res, nxt) => {
         let urls = [];
 
         for (let file of req.files) {
-            const { url } = await cloudinary.uploader.upload(file.path, { folder: `chatter/${req.userID}` });
+            const { url } = await cloudinary.uploader.upload(file.path, { folder: `chatter/${req.userId}` });
             urls.push(url)
             }
         console.log(`${req.files.length} images uploaded`);

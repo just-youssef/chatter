@@ -3,7 +3,8 @@ const ErrorMW = (err, req, res, nxt) => {
     const message = err.message || 'internal server error';
     const error = {
         statusCode,
-        message
+        message,
+        path: err.stack.split("at ")[1].trim(),
     }
     console.log(error);
 

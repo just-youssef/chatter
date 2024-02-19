@@ -13,7 +13,9 @@ import cookieParser from "cookie-parser";
 import path from "path";
 
 // routers
+import authRouter from './routes/auth.route.js';
 import userRouter from './routes/user.route.js';
+import messageRouter from './routes/message.router.js';
 
 // error middleware
 import ErrorMW from "./middlewares/error.mw.js";
@@ -56,7 +58,9 @@ app.use(json());
 app.use(cookieParser());
 
 // using routers
+app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/messages", messageRouter);
 
 // using error middleware at the end
 app.use(ErrorMW);
